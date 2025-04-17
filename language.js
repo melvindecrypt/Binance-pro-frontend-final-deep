@@ -1,0 +1,1 @@
+document.querySelector('select').addEventListener('change', e => alert('Language set to ' + e.target.value));

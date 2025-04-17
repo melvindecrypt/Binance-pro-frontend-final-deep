@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Binance Pro - Admin Dashboard</title>
+  <link rel="stylesheet" href="admin.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <header>
+    <h1>Admin Dashboard</h1>
+  </header>
+  <main>
+    <section class="stats">
+      <div class="card">Total Users: <span id="userCount">1423</span></div>
+      <div class="card">Active Investments: <span id="activeInvestments">387</span></div>
+      <div class="card">Pending KYC: <span id="pendingKYC">12</span></div>
+    </section>
+
+    <section class="charts">
+      <canvas id="investmentChart" width="400" height="200"></canvas>
+    </section>
+
+    <section class="logs">
+      <h2>User Logs</h2>
+      <ul id="logList">
+        <li>[04/14/2025] User123 deposited $500</li>
+        <li>[04/14/2025] Admin approved KYC for User456</li>
+        <li>[04/13/2025] User789 upgraded to Pro+</li>
+      </ul>
+    </section>
+
+    <section class="kyc-approvals">
+      <h2>KYC Approvals</h2>
+      <table>
+        <thead>
+          <tr><th>User</th><th>Status</th><th>Action</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>User456</td><td>Pending</td><td><button>Approve</button></td></tr>
+          <tr><td>User987</td><td>Pending</td><td><button>Approve</button></td></tr>
+        </tbody>
+      </table>
+    </section>
+  </main>
+  <script src="admin.js"></script>
+</body>
+</html>
