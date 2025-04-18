@@ -6,6 +6,9 @@
   --warning: #e67e22;
   --bg-light: #f5f6fa;
   --card-bg: #ffffff;
+  --text: #333;
+  --text-muted: #777;
+  --transition: 0.25s ease-in-out;
 }
 
 /* General Body Styles */
@@ -14,9 +17,9 @@ body {
   background: var(--bg-light);
   margin: 0;
   padding: 20px;
-  padding-bottom: env(safe-area-inset-bottom); /* Ensures padding for notched devices */
+  padding-bottom: env(safe-area-inset-bottom);
   box-sizing: border-box;
-  color: #333;
+  color: var(--text);
 }
 
 /* Search Section Styles */
@@ -24,8 +27,13 @@ body {
   background: var(--card-bg);
   padding: 20px;
   border-radius: 10px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
   margin-bottom: 20px;
+  transition: box-shadow var(--transition);
+}
+
+.search-section:hover {
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
 /* Input Style for Search Bar */
@@ -37,12 +45,29 @@ body {
   border-radius: 8px;
   margin-bottom: 15px;
   background-color: #fff;
+  transition: border var(--transition);
+}
+
+#userSearch:focus {
+  border-color: var(--primary);
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(108, 92, 231, 0.2);
 }
 
 /* Search Results Container */
 .search-results {
   max-height: 60vh;
   overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--primary) #e0e0e0;
+}
+
+.search-results::-webkit-scrollbar {
+  width: 8px;
+}
+.search-results::-webkit-scrollbar-thumb {
+  background-color: var(--primary);
+  border-radius: 4px;
 }
 
 /* User Card Styles */
@@ -52,6 +77,11 @@ body {
   display: flex;
   flex-direction: column;
   margin-bottom: 15px;
+  transition: background var(--transition);
+}
+
+.user-card:hover {
+  background: #f9f9ff;
 }
 
 /* User Info Style */
@@ -59,6 +89,7 @@ body {
   margin-bottom: 10px;
 }
 
+/* Action Buttons Container */
 .user-actions {
   display: flex;
   gap: 8px;
@@ -72,8 +103,13 @@ body {
   border-radius: 6px;
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: background var(--transition), transform var(--transition);
   text-align: center;
+  font-size: 14px;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
 }
 
 /* Button Specific Styles */
@@ -81,33 +117,55 @@ body {
   background: var(--primary);
   color: white;
 }
+.btn-view:hover {
+  background: #5a4cd6;
+}
 
 .btn-suspend {
   background: var(--warning);
   color: white;
+}
+.btn-suspend:hover {
+  background: #cf6418;
 }
 
 .btn-approve {
   background: var(--success);
   color: white;
 }
+.btn-approve:hover {
+  background: #27ae60;
+}
 
 .btn-delete {
   background: var(--danger);
   color: white;
+}
+.btn-delete:hover {
+  background: #c0392b;
 }
 
 /* No Results Message */
 .no-results {
   padding: 20px;
   text-align: center;
-  color: #777;
+  color: var(--text-muted);
+  opacity: 0;
+  animation: fadeIn 0.4s forwards;
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
 }
 
 /* Status Badge Styles */
 .status-badge {
-  display: inline-block;
-  padding: 3px 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3px 10px;
   border-radius: 12px;
   font-size: 12px;
   font-weight: 500;
@@ -117,12 +175,10 @@ body {
   background: #e8f5e9;
   color: #2e7d32;
 }
-
 .status-suspended {
   background: #ffebee;
   color: #c62828;
 }
-
 .status-pending {
   background: #fff8e1;
   color: #f57f17;
@@ -130,15 +186,27 @@ body {
 
 /* Responsive Layout Adjustments */
 @media (min-width: 768px) {
-  /* For larger screens (tablets, desktops), align items properly */
   .user-card {
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
   }
-
-  /* Keep action buttons in one row */
   .user-actions {
     flex-wrap: nowrap;
+  }
+}
+
+/* Accessibility Enhancements */
+.btn:focus,
+#userSearch:focus {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* Print Security */
+@media print {
+  .btn,
+  .user-actions {
+    display: none !important;
   }
 }
