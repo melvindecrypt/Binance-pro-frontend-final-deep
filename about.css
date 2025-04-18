@@ -1,1 +1,62 @@
-body { font-family: Arial; background: #fefbd8; } h1 { color: #cc6600; }
+:root {
+  --primary-color: #6c5ce7;
+  --text-color: #333;
+  --bg-color: #f9f9f9;
+  --accent-color: #cc6600;
+  --card-bg: #ffffff;
+  --border-radius: 12px;
+  --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background-color: var(--bg-color);
+  margin: 0;
+  padding: 20px;
+  padding-bottom: env(safe-area-inset-bottom);
+  -webkit-font-smoothing: antialiased;
+  -webkit-overflow-scrolling: touch;
+  color: var(--text-color);
+}
+
+h1, h2, h3 {
+  color: var(--primary-color);
+  margin-bottom: 12px;
+}
+
+.about-container {
+  max-width: 900px;
+  margin: 0 auto;
+  background: var(--card-bg);
+  padding: 30px;
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+}
+
+.about-section {
+  margin-bottom: 25px;
+}
+
+.about-section p {
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.highlight {
+  color: var(--accent-color);
+  font-weight: bold;
+}
+
+@media (max-width: 600px) {
+  .about-container {
+    padding: 20px;
+  }
+  
+  h1 {
+    font-size: 24px;
+  }
+
+  p {
+    font-size: 15px;
+  }
+}
