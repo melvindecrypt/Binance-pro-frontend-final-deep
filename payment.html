@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Payment - CryptoAccess Pro</title>
   <style>
     :root {
@@ -11,33 +11,36 @@
       --text: #2d3436;
       --bg-light: #f9f9f9;
       --card-bg: #ffffff;
+      --ios-blue: #007aff;
+      --android-green: #3ddc84;
     }
-    
+    * {
+      -webkit-tap-highlight-color: transparent;
+      -webkit-touch-callout: none;
+    }
     body {
-      font-family: 'Segoe UI', system-ui, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell, sans-serif;
       padding: 15px;
       background: var(--bg-light);
       margin: 0 auto;
-      max-width: 600px;
+      max-width: 100%;
       color: var(--text);
       line-height: 1.5;
+      -webkit-text-size-adjust: 100%;
+      padding-bottom: env(safe-area-inset-bottom);
     }
-    
     .header {
       text-align: center;
       margin-bottom: 20px;
     }
-    
     h1 {
       color: var(--primary);
       font-size: 24px;
       margin-bottom: 5px;
     }
-    
     .wallet-container {
       margin-top: 20px;
     }
-    
     .wallet-box {
       background: var(--card-bg);
       border-radius: 12px;
@@ -46,43 +49,36 @@
       box-shadow: 0 3px 10px rgba(0,0,0,0.05);
       border: 1px solid rgba(0,0,0,0.05);
     }
-    
     .wallet-header {
       display: flex;
       align-items: center;
       margin-bottom: 10px;
     }
-    
     .wallet-icon {
       width: 24px;
       height: 24px;
       margin-right: 10px;
     }
-    
     .wallet-name {
       font-weight: 600;
       font-size: 18px;
     }
-    
     .wallet-network {
       font-size: 14px;
       color: #636e72;
       margin-left: 8px;
     }
-    
     .address-container {
       position: relative;
       margin: 15px 0;
     }
-    
     .address-label {
       font-size: 14px;
       color: #636e72;
       margin-bottom: 5px;
     }
-    
     .address {
-      word-break: break-all;
+      word-break: break-word;
       font-family: 'Roboto Mono', monospace;
       padding: 12px;
       background: #f8f9fa;
@@ -90,29 +86,26 @@
       font-size: 14px;
       border: 1px solid #eee;
     }
-    
     .copy-btn {
       background: var(--primary);
       color: white;
       border: none;
-      padding: 12px;
+      padding: 14px;
       border-radius: 8px;
       cursor: pointer;
       width: 100%;
       font-weight: 600;
       margin-top: 10px;
       transition: all 0.2s;
+      font-size: 16px;
     }
-    
     .copy-btn:hover {
       background: var(--primary-light);
     }
-    
     .qr-container {
       margin: 15px auto;
       text-align: center;
     }
-    
     .instructions {
       background: #e3f2fd;
       padding: 18px;
@@ -120,22 +113,18 @@
       margin: 25px 0;
       font-size: 15px;
     }
-    
     .instructions h3 {
       margin-top: 0;
       color: #0d47a1;
     }
-    
     .instructions ol {
       padding-left: 20px;
       margin-bottom: 0;
     }
-    
     .search-box {
       margin-bottom: 20px;
       position: relative;
     }
-    
     #searchInput {
       width: 100%;
       padding: 12px 15px;
@@ -143,21 +132,16 @@
       border: 1px solid #ddd;
       font-size: 16px;
     }
-    
     .no-results {
       text-align: center;
       padding: 30px;
       color: #636e72;
     }
-    
-    @media (max-width: 480px) {
-      body {
-        padding: 12px;
-      }
-      
-      .wallet-box {
-        padding: 15px;
-      }
+    @supports (-webkit-touch-callout: none) {
+      .copy-btn { background: var(--ios-blue); }
+    }
+    @supports not (-webkit-touch-callout: none) {
+      .copy-btn { background: var(--android-green); }
     }
   </style>
   <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap" rel="stylesheet">
@@ -179,162 +163,78 @@
     </ol>
   </div>
 
-  <!-- Search Box -->
   <div class="search-box">
-    <input type="text" id="searchInput" placeholder="Search cryptocurrencies...">
+    <input type="text" id="searchInput" placeholder="Search cryptocurrencies..." autocomplete="off">
   </div>
 
-  <!-- Display Wallet Addresses -->
   <div id="wallets" class="wallet-container"></div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
   <script>
-    // Wallet Information
     const wallets = [
-      { 
-        name: "Bitcoin", 
-        ticker: "BTC",
-        network: "SegWit", 
-        address: "bc1qrhmqgnwml62udh5c5wnyukx65rdtqdsa58p54l",
-        icon: "https://cryptologos.cc/logos/bitcoin-btc-logo.svg"
-      },
-      { 
-        name: "Ethereum", 
-        ticker: "ETH",
-        network: "ERC-20", 
-        address: "0xEe19FeE35ef7257c5Bcd8a1206dB6b1fCdf8e767",
-        icon: "https://cryptologos.cc/logos/ethereum-eth-logo.svg"
-      },
-      { 
-        name: "Solana", 
-        ticker: "SOL",
-        network: "SOL", 
-        address: "ChbMRwr4xbH9hQSJA5Ei5MmRWAjn5MPUsVpNUMabsf5K",
-        icon: "https://cryptologos.cc/logos/solana-sol-logo.svg"
-      },
-      { 
-        name: "BNB", 
-        ticker: "BNB",
-        network: "BEP-20", 
-        address: "0xEe19FeE35ef7257c5Bcd8a1206dB6b1fCdf8e767",
-        icon: "https://cryptologos.cc/logos/bnb-bnb-logo.svg"
-      },
-      { 
-        name: "USDT", 
-        ticker: "USDT",
-        network: "ERC-20", 
-        address: "0xEe19FeE35ef7257c5Bcd8a1206dB6b1fCdf8e767",
-        icon: "https://cryptologos.cc/logos/tether-usdt-logo.svg"
-      },
-      { 
-        name: "USDC", 
-        ticker: "USDC",
-        network: "ERC-20", 
-        address: "0xEe19FeE35ef7257c5Bcd8a1206dB6b1fCdf8e767",
-        icon: "https://cryptologos.cc/logos/usd-coin-usdc-logo.svg"
-      },
-      { 
-        name: "XRP", 
-        ticker: "XRP",
-        network: "XRP", 
-        address: "rGcSBHz3dURpsh3Tg4y2qpbMMpMaxTMQL7",
-        icon: "https://cryptologos.cc/logos/xrp-xrp-logo.svg"
-      },
-      { 
-        name: "Dogecoin", 
-        ticker: "DOGE",
-        network: "DOGE", 
-        address: "DJWWvsfk7cZLFjeWhb9KDyustcZ4vVu7ik",
-        icon: "https://cryptologos.cc/logos/dogecoin-doge-logo.svg"
-      },
-      { 
-        name: "TRON", 
-        ticker: "TRX",
-        network: "TRC-20", 
-        address: "TJ3JRojmo9USXSZ7Sindzycz15EHph3ZYP",
-        icon: "https://cryptologos.cc/logos/tron-trx-logo.svg"
-      },
-      { 
-        name: "Litecoin", 
-        ticker: "LTC",
-        network: "LTC", 
-        address: "ltc1qp36qqd669xnvtmehyst3ht9suu8z73qasgnxps",
-        icon: "https://cryptologos.cc/logos/litecoin-ltc-logo.svg"
-      }
+      { name: "Bitcoin", ticker: "BTC", network: "SegWit", address: "bc1qrhmqgnwml62udh5c5wnyukx65rdtqdsa58p54l", icon: "https://cryptologos.cc/logos/bitcoin-btc-logo.svg" },
+      { name: "Ethereum", ticker: "ETH", network: "ERC-20", address: "0xEe19FeE35ef7257c5Bcd8a1206dB6b1fCdf8e767", icon: "https://cryptologos.cc/logos/ethereum-eth-logo.svg" },
+      { name: "Solana", ticker: "SOL", network: "SOL", address: "ChbMRwr4xbH9hQSJA5Ei5MmRWAjn5MPUsVpNUMabsf5K", icon: "https://cryptologos.cc/logos/solana-sol-logo.svg" },
+      { name: "BNB", ticker: "BNB", network: "BEP-20", address: "0xEe19FeE35ef7257c5Bcd8a1206dB6b1fCdf8e767", icon: "https://cryptologos.cc/logos/bnb-bnb-logo.svg" },
+      { name: "Tether", ticker: "USDT", network: "ERC-20", address: "0xEe19FeE35ef7257c5Bcd8a1206dB6b1fCdf8e767", icon: "https://cryptologos.cc/logos/tether-usdt-logo.svg" },
+      { name: "USD Coin", ticker: "USDC", network: "ERC-20", address: "0xEe19FeE35ef7257c5Bcd8a1206dB6b1fCdf8e767", icon: "https://cryptologos.cc/logos/usd-coin-usdc-logo.svg" },
+      { name: "Dai", ticker: "DAI", network: "ERC-20", address: "0xEe19FeE35ef7257c5Bcd8a1206dB6b1fCdf8e767", icon: "https://cryptologos.cc/logos/multi-collateral-dai-dai-logo.svg" },
+      { name: "XRP", ticker: "XRP", network: "XRP", address: "rGcSBHz3dURpsh3Tg4y2qpbMMpMaxTMQL7", icon: "https://cryptologos.cc/logos/xrp-xrp-logo.svg" },
+      { name: "Dogecoin", ticker: "DOGE", network: "DOGE", address: "DJWWvsfk7cZLFjeWhb9KDyustcZ4vVu7ik", icon: "https://cryptologos.cc/logos/dogecoin-doge-logo.svg" },
+      { name: "TRON", ticker: "TRX", network: "TRC-20", address: "TJ3JRojmo9USXSZ7Sindzycz15EHph3ZYP", icon: "https://cryptologos.cc/logos/tron-trx-logo.svg" },
+      { name: "Tether (TRON)", ticker: "USDT", network: "TRC-20", address: "TJ3JRojmo9USXSZ7Sindzycz15EHph3ZYP", icon: "https://cryptologos.cc/logos/tether-usdt-logo.svg" },
+      { name: "Litecoin", ticker: "LTC", network: "LTC", address: "ltc1qp36qqd669xnvtmehyst3ht9suu8z73qasgnxps", icon: "https://cryptologos.cc/logos/litecoin-ltc-logo.svg" },
+      { name: "Mantle", ticker: "MNT", network: "ERC-20", address: "0xEe19FeE35ef7257c5Bcd8a1206dB6b1fCdf8e767", icon: "https://cryptologos.cc/logos/mantle-mnt-logo.svg" }
     ];
 
     const walletsDiv = document.getElementById('wallets');
     const searchInput = document.getElementById('searchInput');
 
-    // Display wallets with QR codes
     function displayWallets(filter = '') {
       walletsDiv.innerHTML = '';
-      
-      const filteredWallets = wallets.filter(wallet => 
-        wallet.name.toLowerCase().includes(filter.toLowerCase()) || 
-        wallet.ticker.toLowerCase().includes(filter.toLowerCase())
+      const filteredWallets = wallets.filter(w =>
+        w.name.toLowerCase().includes(filter.toLowerCase()) ||
+        w.ticker.toLowerCase().includes(filter.toLowerCase()) ||
+        w.network.toLowerCase().includes(filter.toLowerCase())
       );
-
       if (filteredWallets.length === 0) {
         walletsDiv.innerHTML = '<div class="no-results">No matching cryptocurrencies found</div>';
         return;
       }
-
-      filteredWallets.forEach((wallet, index) => {
+      filteredWallets.forEach((w, i) => {
         const card = document.createElement('div');
         card.className = 'wallet-box';
         card.innerHTML = `
           <div class="wallet-header">
-            <img src="${wallet.icon}" alt="${wallet.name}" class="wallet-icon">
-            <span class="wallet-name">${wallet.name} (${wallet.ticker})</span>
-            <span class="wallet-network">${wallet.network}</span>
+            <img src="${w.icon}" alt="${w.name}" class="wallet-icon">
+            <span class="wallet-name">${w.name} (${w.ticker})</span>
+            <span class="wallet-network">${w.network}</span>
           </div>
-          
           <div class="address-container">
             <div class="address-label">Wallet Address:</div>
-            <div class="address" id="address-${index}">${wallet.address}</div>
+            <div class="address" id="addr-${i}">${w.address}</div>
+            <button class="copy-btn" onclick="copyAddress(${i})">Copy Address</button>
           </div>
-          
-          <button class="copy-btn" onclick="copyToClipboard('${wallet.address}', '${wallet.name} (${wallet.ticker})')">
-            Copy ${wallet.ticker} Address
-          </button>
-          
-          <div class="qr-container">
-            <canvas id="qr-${index}"></canvas>
-          </div>
+          <div class="qr-container"><canvas id="qr-${i}"></canvas></div>
         `;
         walletsDiv.appendChild(card);
-
         new QRious({
-          element: document.getElementById(`qr-${index}`),
-          value: wallet.address,
-          size: 160,
-          background: '#ffffff',
-          foreground: '#000000'
+          element: document.getElementById(`qr-${i}`),
+          value: w.address,
+          size: 160
         });
       });
     }
 
-    // Initial display
-    displayWallets();
-
-    // Search functionality
-    searchInput.addEventListener('input', (e) => {
-      displayWallets(e.target.value);
-    });
-
-    // Copy address to clipboard with confirmation
-    function copyToClipboard(text, currency) {
-      navigator.clipboard.writeText(text)
-        .then(() => {
-          const partialAddress = `${text.substring(0, 6)}...${text.slice(-4)}`;
-          alert(`${currency} address copied!\n\n${partialAddress}`);
-        })
-        .catch(err => {
-          console.error('Copy failed:', err);
-          prompt('Please copy this address manually:', text);
-        });
+    function copyAddress(index) {
+      const addressText = document.getElementById(`addr-${index}`).textContent;
+      navigator.clipboard.writeText(addressText).then(() => {
+        alert("Wallet address copied!");
+      });
     }
+
+    searchInput.addEventListener('input', () => displayWallets(searchInput.value));
+    displayWallets();
   </script>
 </body>
 </html>
